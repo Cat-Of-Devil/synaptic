@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+    
+        <title>Universal: Chapter 0</title>
+    
+
+    <meta name="description" content="Software Engineer">
+
+    
+
+    <link rel="icon" href="assets/img/favicon.ico">
+    <link href='https://fonts.googleapis.com/css?family=Inconsolata:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="assets/css/main.css">
+    <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-54879338-1', 'auto');
+    ga('send', 'pageview');
+    </script>
+</head>
+
+<body>
+
+    <div class="wrapper">
+        <div class="post">
+	<div class="post__back">
+    	<a href="../log.html">&lt;-- log</a>
+    </div>
+    <div class="post__title">
+    	<h1>Universal: Chapter 0</h1>
+    </div>
+    <div class="post__date">
+    	<p>August 21, 2016</p>
+    </div>
+    <div class="post__meta">
+    	<p></p>
+    </div>
+    <div class="post__content"?>
+        <p>The purpose of this chapter is to setup a development environment to start working on our universal app. We will cover Webpack, Babel, PostCSS, ESLint and we will create a DevServer.</p>
+
+<p><strong>Branch</strong>: To see the commits of this chapter checkout <a href="https://github.com/cazala/universal-app/commits/setup">this branch</a>.</p>
+
+<p><strong>Release</strong>: To skip this chapter just clone <a href="https://github.com/cazala/universal-app/releases/tag/Setup">this release</a>.</p>
+
+<hr />
+
+<h2 id="init">Init</h2>
+
+<p>Go ahead, create a new directory and jump in</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>mkdir universal-app &amp;&amp; cd universal-app
+</code></pre>
+</div>
+
+<p>Initialize a git repository</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>git init
+</code></pre>
+</div>
+
+<p>Create a new branch <code class="highlighter-rouge">setup</code></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>git checkout -b setup
+</code></pre>
+</div>
+
+<p>Set node version to v6</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>nvm install 6 &amp;&amp; nvm use 6
+</code></pre>
+</div>
+
+<p>Add a README</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>echo 'Javascript Universal App' &gt; README.md
+</code></pre>
+</div>
+
+<p>Initialize npm (go thru the interactive setup)</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>npm init
+</code></pre>
+</div>
+
+<p>Ignore <code class="highlighter-rouge">node_modules</code></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>echo node_modules &gt; .gitignore
+</code></pre>
+</div>
+
+<p>You are all set!</p>
+
+<hr />
+
+<p><strong>Diff</strong>: to see the diff for this step <a href="https://github.com/cazala/universal-app/commit/8eac4b551efca5ab61c3171ec0f68eb38475f724">click here</a>.</p>
+
+<p><strong>Fast-forward</strong>: <code class="highlighter-rouge">git clone --branch init https://github.com/cazala/universal-app.git --depth=1</code></p>
+
+<hr />
+
+<h2 id="webpack">Webpack</h2>
+
+<p><a href="https://webpack.github.io/">Webpack</a> is a widely used module bundler, and the first thing to setup</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>npm install webpack --save-dev
+</code></pre>
+</div>
+
+<p>First create a <code class="highlighter-rouge">/src</code> and <code class="highlighter-rouge">/dist</code> directories</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>mkdir src &amp;&amp; mkdir dist
+</code></pre>
+</div>
+
+<p>Save the following file as <code class="highlighter-rouge">webpack.config.js</code></p>
+
+<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">webpack</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'webpack'</span><span class="p">)</span>
+<span class="kd">var</span> <span class="nx">path</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'path'</span><span class="p">)</span>
+<span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="p">{</span>  
+  <span class="na">context</span><span class="p">:</span> <span class="nx">__dirname</span><span class="p">,</span>  
+  <span class="na">entry</span><span class="p">:</span> <span class="s1">'./src/index.js'</span><span class="p">,</span>  
+  <span class="na">output</span><span class="p">:</span> <span class="p">{</span>    
+    <span class="na">path</span><span class="p">:</span> <span class="nx">path</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="s1">'dist'</span><span class="p">),</span>    
+    <span class="na">filename</span><span class="p">:</span> <span class="s1">'bundle.js'</span><span class="p">,</span>  <span class="p">},</span>  
+    <span class="na">plugins</span><span class="p">:</span> <span class="p">[</span> <span class="k">new</span> <span class="nx">webpack</span><span class="p">.</span><span class="nx">NoErrorsPlugin</span><span class="p">()</span> <span class="p">],</span>  
+    <span class="na">resolve</span><span class="p">:</span> <span class="p">{</span>    
+      <span class="na">extensions</span><span class="p">:</span> <span class="p">[</span><span class="s1">''</span><span class="p">,</span> <span class="s1">'.js'</span><span class="p">,</span> <span class="s1">'.json'</span><span class="p">],</span>    
+      <span class="na">modulesDirectories</span><span class="p">:</span> <span class="p">[</span><span class="s1">'.'</span><span class="p">,</span> <span class="s1">'src'</span><span class="p">,</span> <span class="s1">'node_modules'</span><span class="p">]</span>  
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+<p>Add <code class="highlighter-rouge">/dist</code> to the <code class="highlighter-rouge">.gitignore</code> file
+<code class="highlighter-rouge">
+node_modules
+dist
+</code></p>
+
+<p>Add <code class="highlighter-rouge">build</code> and <code class="highlighter-rouge">start</code> scripts to your <code class="highlighter-rouge">package.json</code></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>"build": "webpack --config webpack.config.js",
+"start": "node dist/bundle.js",
+</code></pre>
+</div>
+
+<hr />
+
+<p><strong>Test It Out</strong>:</p>
+
+<p>Create the following <code class="highlighter-rouge">index.js</code> file inside <code class="highlighter-rouge">/src</code>:</p>
+
+<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'hello world'</span><span class="p">)</span>
+</code></pre>
+</div>
+
+<p>Now just <code class="highlighter-rouge">npm run build</code> and then  <code class="highlighter-rouge">npm run start</code></p>
+
+<p>You should see a <code class="highlighter-rouge">hello world</code> in your console, and you will find that you 1 line <code class="highlighter-rouge">src/index.js</code> has become a 51 lines <code class="highlighter-rouge">dist/bundle.js</code>. Yay… right? This will pay off in the future tho, as we start plugging stuff into webpack.</p>
+
+<hr />
+
+<p><strong>Diff</strong>: to see the diff for this step <a href="https://github.com/cazala/universal-app/commit/5e95fdf8103e5a75d129ef7ce3183273bac86483">click here</a>.</p>
+
+<p><strong>Fast-forward</strong>: <code class="highlighter-rouge">git clone --branch webpack https://github.com/cazala/universal-app.git --depth=1</code></p>
+
+<hr />
+
+<h2 id="babel">Babel</h2>
+
+<p><a href="https://babeljs.io/">Babel</a> is a JavaScript compiler. It extends the language capabilities thru syntax transformers, we will need this in order to use ES2015 and React.</p>
+
+<p>Get ready to install a truckload of dependencies</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>npm install --save babel-core babel-plugin-jsx-display-if babel-plugin-transform-object-rest-spread babel-polyfill babel-preset-es2015 babel-preset-react babel-register babel-runtime babel-loader
+</code></pre>
+</div>
+
+<p>Add <code class="highlighter-rouge">.babelrc</code> to configure babel</p>
+
+<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="p">{</span>
+  <span class="s2">"presets"</span><span class="err">:</span> <span class="p">[</span><span class="s2">"es2015"</span><span class="p">,</span> <span class="s2">"react"</span><span class="p">],</span>
+  <span class="s2">"plugins"</span><span class="err">:</span> <span class="p">[</span>
+    <span class="s2">"transform-object-rest-spread"</span><span class="p">,</span>
+    <span class="s2">"jsx-display-if"</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+
+</code></pre>
+</div>
+
+<p>And finally add loader to <code class="highlighter-rouge">webpack.config.js</code> so webpack transpiles all the <code class="highlighter-rouge">.js</code> files using babel (except the ones in <code class="highlighter-rouge">node_modules</code>)</p>
+
+<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="nx">module</span><span class="err">:</span> <span class="p">{</span>  
+  <span class="nl">loaders</span><span class="p">:</span> <span class="p">[</span>    
+    <span class="p">{</span>      
+      <span class="na">test</span><span class="p">:</span> <span class="sr">/</span><span class="se">\.</span><span class="sr">js$/</span><span class="p">,</span>      
+      <span class="na">loaders</span><span class="p">:</span> <span class="p">[</span><span class="s1">'babel'</span><span class="p">],</span>      
+      <span class="na">exclude</span><span class="p">:</span> <span class="sr">/node_modules/</span>    
+    <span class="p">}</span>  
+  <span class="p">]</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+
+<hr />
+
+<p><strong>Test It Out</strong>:</p>
+
+<p>Save the following as your <code class="highlighter-rouge">src/index.js</code></p>
+
+<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="kr">const</span> <span class="nx">obj</span> <span class="o">=</span> <span class="p">{</span> <span class="na">a</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="na">b</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="na">c</span><span class="p">:</span><span class="mi">3</span> <span class="p">}</span>
+<span class="kr">const</span> <span class="p">{</span> <span class="nx">a</span><span class="p">,</span> <span class="p">...</span><span class="nx">rest</span> <span class="p">}</span> <span class="o">=</span> <span class="nx">obj</span>
+<span class="kr">const</span> <span class="nx">spread</span> <span class="o">=</span> <span class="p">{</span> <span class="p">...</span><span class="nx">rest</span><span class="p">,</span> <span class="na">d</span><span class="p">:</span> <span class="mi">4</span> <span class="p">}</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">rest</span><span class="p">)</span> <span class="c1">// { b:2, c: 3}</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">spread</span><span class="p">)</span> <span class="c1">// { b:2, c: 3, d: 4 }</span>
+</code></pre>
+</div>
+
+<p>Now <code class="highlighter-rouge">npm run build</code> and <code class="highlighter-rouge">npm run start</code> and you should see the <em>rest</em> and <em>spread</em> operators working (thus, babel is working)</p>
+
+<hr />
+
+<p><strong>Diff</strong>: to see the diff for this step <a href="https://github.com/cazala/universal-app/commit/faf27892fb149f66a9dedac8cb9f425ebd689e28">click here</a>.</p>
+
+<p><strong>Fast-forward</strong>: <code class="highlighter-rouge">git clone --branch babel https://github.com/cazala/universal-app.git --depth=1</code></p>
+
+<hr />
+
+<h2 id="postcss">PostCSS</h2>
+
+<p><a href="http://postcss.org/">PostCSS</a> is a tool for transforming CSS with JavaScript, like a Babel for CSS. We will set it up to let us work with autoprefixer, css modules (localized css classnames), css nesting, css variables and what not.</p>
+
+<p>Again, get ready for installing a bunch of deps:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>npm install --save-dev autoprefixer css-loader style-loader postcss-import postcss-loader postcss-mixins postcss-nested postcss-simple-vars
+</code></pre>
+</div>
+
+<p>Add loaders to <code class="highlighter-rouge">webpack.config.js</code> so webpack loads all the <code class="highlighter-rouge">.css</code> and <code class="highlighter-rouge">.scss</code> files with <code class="highlighter-rouge">style</code>, <code class="highlighter-rouge">css</code> and <code class="highlighter-rouge">postcss</code> loaders.</p>
+
+<p>This way we will be able to <code class="highlighter-rouge">require(./styles.css)</code></p>
+
+<ul>
+  <li>
+    <p><strong>style-loader</strong>: It adds a <code class="highlighter-rouge">&lt;style&gt;</code> tag to the <code class="highlighter-rouge">&lt;head&gt;</code> with the loaded style.</p>
+  </li>
+  <li>
+    <p><strong>css-loader</strong>: It transform the css file with localized classnames (aka CSS Modules), applies minification and source-maps.</p>
+  </li>
+  <li>
+    <p><strong>postcss-loader</strong>: It lets us use transformation plugins like <code class="highlighter-rouge">autoprefixer</code>, <code class="highlighter-rouge">import</code>, <code class="highlighter-rouge">nested</code>, and <code class="highlighter-rouge">simple-vars</code>, to have a sass\/less similar experience.</p>
+  </li>
+</ul>
+
+<p>So lets add the loaders:</p>
+
+<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="p">{</span>
+  <span class="nl">test</span><span class="p">:</span> <span class="sr">/</span><span class="se">(\.</span><span class="sr">scss|</span><span class="se">\.</span><span class="sr">css</span><span class="se">)</span><span class="sr">$/</span><span class="p">,</span>
+  <span class="nx">loaders</span><span class="err">:</span> <span class="p">[</span><span class="s1">'style'</span><span class="p">,</span> <span class="s1">'css?sourceMap&amp;modules&amp;importLoaders=1&amp;localIdentName=[name]__[local]___[hash:base64:5]'</span><span class="p">,</span> <span class="s1">'postcss'</span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+
+<p>Add the postcss plugins:</p>
+
+<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="nx">postcss</span><span class="err">:</span> <span class="p">[</span>
+  <span class="nx">require</span><span class="p">(</span><span class="s1">'autoprefixer'</span><span class="p">),</span>
+  <span class="nx">require</span><span class="p">(</span><span class="s1">'postcss-import'</span><span class="p">),</span>
+  <span class="nx">require</span><span class="p">(</span><span class="s1">'postcss-nested'</span><span class="p">),</span>
+  <span class="nx">require</span><span class="p">(</span><span class="s1">'postcss-simple-vars'</span><span class="p">)</span>
+<span class="p">]</span>
+</code></pre>
+</div>
+
+<p>And add the extensions to <code class="highlighter-rouge">resolve.extension</code></p>
+
+<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="nx">extensions</span><span class="err">:</span> <span class="p">[</span><span class="s1">''</span><span class="p">,</span> <span class="s1">'.js'</span><span class="p">,</span> <span class="s1">'.json'</span><span class="p">,</span> <span class="s1">'.css'</span><span class="p">,</span> <span class="s1">'scss'</span><span class="p">],</span>
+</code></pre>
+</div>
+
+<hr />
+
+<p><strong>Test It Out</strong>:</p>
+
+<p>Add the following <code class="highlighter-rouge">index.css</code> to <code class="highlighter-rouge">/src</code></p>
+
+<div class="language-css highlighter-rouge"><pre class="highlight"><code><span class="nc">.red</span> <span class="p">{</span>
+  <span class="nl">color</span><span class="p">:</span> <span class="no">red</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+
+<p>Add the following <code class="highlighter-rouge">index.js</code> to <code class="highlighter-rouge">/src</code></p>
+
+<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="kr">import</span> <span class="nx">styles</span> <span class="nx">from</span> <span class="s1">'./index.css'</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">styles</span><span class="p">)</span> <span class="c1">// { red: '...' }</span>
+<span class="nb">window</span><span class="p">.</span><span class="nx">onload</span> <span class="o">=</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="nb">document</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">classList</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="nx">styles</span><span class="p">.</span><span class="nx">red</span><span class="p">)</span>
+</code></pre>
+</div>
+
+<p>And finally add this <code class="highlighter-rouge">index.html</code> at the root level (<strong>not</strong> to <code class="highlighter-rouge">/src</code>)</p>
+
+<div class="language-html highlighter-rouge"><pre class="highlight"><code><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">'./dist/bundle.js'</span><span class="nt">&gt;&lt;/script&gt;</span>
+<span class="nt">&lt;body&gt;</span>Hello World<span class="nt">&lt;/body&gt;</span>
+</code></pre>
+</div>
+
+<p>Now run <code class="highlighter-rouge">npm run build</code> and <code class="highlighter-rouge">open index.html</code></p>
+
+<p>You should see that a <code class="highlighter-rouge">&lt;style&gt;</code> tag was added to the <code class="highlighter-rouge">&lt;head&gt;</code> with our css file, and the localized css classname <code class="highlighter-rouge">index__red___3fvh6</code> was applied to the <code class="highlighter-rouge">&lt;body&gt;</code>, making the Hello World be red.</p>
+
+<p><img src="assets/img/postcss.png" alt="" /></p>
+
+<hr />
+
+<p><strong>Diff</strong>: to see the diff for this step <a href="https://github.com/cazala/universal-app/commit/3891271b84fc3814ef02f19f1a76e765b326526f">click here</a>.</p>
+
+<p><strong>Fast-forward</strong>: <code class="highlighter-rouge">git clone --branch postcss https://github.com/cazala/universal-app.git --depth=1</code></p>
+
+<hr />
+
+<h2 id="eslint">ESLint</h2>
+
+<p><a href="http://eslint.org/">ESLint</a> is a lint utility that will help us debug at coding time and write consistent code.</p>
+
+<p>Yet again, another bigass npm install:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>npm install --save-dev eslint babel-eslint eslint-config-standard eslint-config-standard-react eslint-plugin-babel eslint-plugin-import eslint-plugin-jsx-a11y eslint-plugin-promise eslint-plugin-react eslint-plugin-standard eslint-watch
+</code></pre>
+</div>
+
+<p>Add a <code class="highlighter-rouge">.eslintrc</code> file to configure the linter, this is an example of the coding style that I use, but you can configure it to your needs, and there are tons of eslint plugins that you can choose from in npm:</p>
+
+<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="p">{</span>
+  <span class="s2">"env"</span><span class="err">:</span> <span class="p">{</span>
+    <span class="s2">"browser"</span><span class="err">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="s2">"node"</span><span class="err">:</span> <span class="kc">true</span>
+  <span class="p">},</span>
+  <span class="s2">"parser"</span><span class="err">:</span> <span class="s2">"babel-eslint"</span><span class="p">,</span>
+  <span class="s2">"extends"</span><span class="err">:</span> <span class="p">[</span><span class="s2">"standard"</span><span class="p">,</span> <span class="s2">"standard-react"</span><span class="p">],</span>
+  <span class="s2">"rules"</span><span class="err">:</span> <span class="p">{</span>
+    <span class="s2">"comma-dangle"</span> <span class="err">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="s2">"always-multiline"</span><span class="p">],</span>
+    <span class="s2">"semi"</span><span class="err">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="s2">"never"</span><span class="p">],</span>
+    <span class="s2">"no-extra-semi"</span><span class="err">:</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="s2">"jsx-quotes"</span><span class="err">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="s2">"prefer-single"</span><span class="p">],</span>
+    <span class="s2">"react/jsx-boolean-value"</span><span class="err">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="s2">"always"</span><span class="p">],</span>
+    <span class="s2">"react/jsx-max-props-per-line"</span><span class="err">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="p">{</span><span class="s2">"maximum"</span><span class="p">:</span> <span class="mi">4</span><span class="p">}],</span>
+    <span class="s2">"react/self-closing-comp"</span><span class="err">:</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="s2">"react/jsx-indent-props"</span><span class="err">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+    <span class="s2">"react/sort-comp"</span><span class="err">:</span> <span class="mi">2</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+
+<hr />
+
+<p><strong>Test It Out</strong>:</p>
+
+<p>Now, save the following as your <code class="highlighter-rouge">src/index.js</code></p>
+
+<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="kr">const</span> <span class="nx">a</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="kr">const</span> <span class="nx">b</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="kr">const</span> <span class="nx">c</span> <span class="o">=</span> <span class="mi">3</span> <span class="c1">// unused variable</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">a</span> <span class="o">+</span> <span class="nx">b</span><span class="p">)</span>
+</code></pre>
+</div>
+
+<p>(also, you can delete the <code class="highlighter-rouge">/index.html</code> and <code class="highlighter-rouge">/src/index.css</code> from previous step if you still have them)</p>
+
+<p>So now if you open <code class="highlighter-rouge">src/index.js</code> with an editor with eslint support (like <a href="https://atom.io">Atom</a> + <a href="https://atom.io/packages/linter">Linter</a> + <a href="https://atom.io/packages/linter-eslint">ESLint Plugin</a>) it should be working:</p>
+
+<p><img src="assets/img/eslint.png" alt="" /></p>
+
+<hr />
+
+<p><strong>Diff</strong>: to see the diff for this step <a href="https://github.com/cazala/universal-app/commit/fe166a55dd76b1b70310587c6ca7f26deaf5e2da">click here</a>.</p>
+
+<p><strong>Fast-forward</strong>: <code class="highlighter-rouge">git clone --branch eslint https://github.com/cazala/universal-app.git --depth=1</code></p>
+
+<hr />
+
+<h2 id="devserver">DevServer</h2>
+
+<p>Finally, we will create a development server that will watch for changes in our files as we develop and serve them thru a web server, so we can see our work and debug as we code</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>npm install --save express
+npm install --save-dev webpack-dev-middleware webpack-hot-middleware
+</code></pre>
+</div>
+
+<p>Add the following file as <code class="highlighter-rouge">dev-server.js</code>:</p>
+
+<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">webpack</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'webpack'</span><span class="p">)</span>
+<span class="kd">var</span> <span class="nx">webpackDevMiddleware</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'webpack-dev-middleware'</span><span class="p">)</span>
+<span class="kd">var</span> <span class="nx">webpackHotMiddleware</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'webpack-hot-middleware'</span><span class="p">)</span>
+<span class="kd">var</span> <span class="nx">config</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'./webpack.config.js'</span><span class="p">)</span>
+<span class="kd">var</span> <span class="nx">Express</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'express'</span><span class="p">)</span>
+<span class="kd">var</span> <span class="nx">app</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Express</span><span class="p">()</span>
+<span class="kd">var</span> <span class="nx">port</span> <span class="o">=</span> <span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">PORT</span> <span class="o">||</span> <span class="mi">9999</span>
+<span class="kd">var</span> <span class="nx">compiler</span> <span class="o">=</span> <span class="nx">webpack</span><span class="p">(</span><span class="nx">config</span><span class="p">)</span>
+<span class="kd">var</span> <span class="nx">dev</span> <span class="o">=</span> <span class="nx">webpackDevMiddleware</span><span class="p">(</span><span class="nx">compiler</span><span class="p">,</span> <span class="p">{</span> <span class="na">noInfo</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span> <span class="na">publicPath</span><span class="p">:</span> <span class="nx">config</span><span class="p">.</span><span class="nx">output</span><span class="p">.</span><span class="nx">publicPath</span> <span class="p">})</span>
+<span class="kd">var</span> <span class="nx">hot</span> <span class="o">=</span> <span class="nx">webpackHotMiddleware</span><span class="p">(</span><span class="nx">compiler</span><span class="p">)</span>
+
+<span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">dev</span><span class="p">)</span>
+<span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">hot</span><span class="p">)</span>
+
+<span class="nx">app</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'*'</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">res</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="err">`</span>
+    <span class="o">&lt;</span><span class="nx">html</span><span class="o">&gt;</span>
+      <span class="o">&lt;</span><span class="nx">head</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="nx">title</span><span class="o">&gt;</span><span class="nx">Webpack</span> <span class="nx">Development</span> <span class="nx">Server</span><span class="o">&lt;</span><span class="sr">/title</span><span class="err">&gt;
+</span>      <span class="o">&lt;</span><span class="sr">/head</span><span class="err">&gt;
+</span>      <span class="o">&lt;</span><span class="nx">body</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="nx">div</span> <span class="nx">id</span><span class="o">=</span><span class="s2">"root"</span><span class="o">&gt;</span><span class="nx">Hello</span> <span class="nx">World</span><span class="o">&lt;</span><span class="sr">/div</span><span class="err">&gt;
+</span>      <span class="o">&lt;</span><span class="sr">/body</span><span class="err">&gt;
+</span>      <span class="o">&lt;</span><span class="nx">script</span> <span class="nx">src</span><span class="o">=</span><span class="s2">"/bundle.js"</span> <span class="nx">async</span> <span class="nx">defer</span><span class="o">&gt;&lt;</span><span class="sr">/script</span><span class="err">&gt;
+</span>    <span class="o">&lt;</span><span class="sr">/html</span><span class="err">&gt;
+</span>  <span class="err">`</span><span class="p">)</span>
+<span class="p">})</span>
+
+<span class="nx">app</span><span class="p">.</span><span class="nx">listen</span><span class="p">(</span><span class="nx">port</span><span class="p">,</span> <span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span> <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="k">return</span> <span class="p">}</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">info</span><span class="p">(</span><span class="s1">'Open up http://localhost:%s/ in your browser.'</span><span class="p">,</span> <span class="nx">port</span><span class="p">)</span>
+<span class="p">})</span>
+</code></pre>
+</div>
+
+<p>Add a <code class="highlighter-rouge">devtool</code> property to <code class="highlighter-rouge">webpack.config.js</code> to generate source maps</p>
+
+<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="nx">devtool</span><span class="err">:</span> <span class="s1">'cheap-module-eval-source-map'</span><span class="p">,</span>
+</code></pre>
+</div>
+
+<p>Add <code class="highlighter-rouge">webpack-hot-middleware</code>’s client to your <code class="highlighter-rouge">webpack.entry</code> list</p>
+
+<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="nx">entry</span><span class="err">:</span> <span class="p">[</span>
+  <span class="s1">'webpack-hot-middleware/client'</span><span class="p">,</span>
+  <span class="s1">'./src/index.js'</span>
+<span class="p">],</span>
+</code></pre>
+</div>
+
+<p>Add a public path to your <code class="highlighter-rouge">webpack.output</code>, that’s where the Express will serve the bundle.</p>
+
+<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="nx">output</span><span class="err">:</span> <span class="p">{</span>
+  <span class="nl">path</span><span class="p">:</span> <span class="nx">path</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="s1">'dist'</span><span class="p">),</span>
+  <span class="nx">filename</span><span class="err">:</span> <span class="s1">'bundle.js'</span><span class="p">,</span>
+  <span class="nx">publicPath</span><span class="err">:</span> <span class="s1">'/'</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+
+<p>Add webpack’s <code class="highlighter-rouge">HotModuleReplacementPlugin</code> to your <code class="highlighter-rouge">webpack.plugins</code></p>
+
+<div class="language-js highlighter-rouge"><pre class="highlight"><code><span class="nx">plugins</span><span class="err">:</span> <span class="p">[</span>
+  <span class="k">new</span> <span class="nx">webpack</span><span class="p">.</span><span class="nx">HotModuleReplacementPlugin</span><span class="p">(),</span>
+  <span class="k">new</span> <span class="nx">webpack</span><span class="p">.</span><span class="nx">NoErrorsPlugin</span><span class="p">()</span>
+<span class="p">],</span>
+</code></pre>
+</div>
+
+<p>You can also remove <code class="highlighter-rouge">src/index.js</code> if you still have it from previous step</p>
+
+<p>Finally, add a script to your <code class="highlighter-rouge">package.json</code>’s scripts to start the dev-server</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>"dev-server": "node dev-server.js",
+</code></pre>
+</div>
+
+<hr />
+
+<p><strong>Test It Out</strong>:</p>
+
+<p>Just <code class="highlighter-rouge">npm run dev-server</code> and open up <code class="highlighter-rouge">localhost:9999</code>, you should see a Hello World</p>
+
+<hr />
+
+<p><strong>Diff</strong>: to see the diff for this step <a href="https://github.com/cazala/universal-app/commit/b35ee38c160f72f3598832400f77d918ce09a40b">click here</a>.</p>
+
+<p><strong>Fast-forward</strong>: <code class="highlighter-rouge">git clone --branch dev-server https://github.com/cazala/universal-app.git --depth=1</code></p>
+
+<hr />
+
+    </div>
+</div>
+
+    </div>
+
+</body>
+
+</html>
